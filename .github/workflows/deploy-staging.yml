@@ -53,12 +53,15 @@ jobs:
           registry: ${{ env.IMAGE_REGISTRY_URL }}
           username: ${{ github.actor }}
           password: ${{ secrets.CR_PAT }}
-
+      - name: Normalize repo and image names
+        run: |
+          echo "REPO_LC=${GITHUB_REPOSITORY,,}" >> $GITHUB_ENV
+          echo "IMAGE_NAME_LC=${DOCKER_IMAGE_NAME,,}" >> $GITHUB_ENV
       - name: Extract metadata (tags, labels) for Docker
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: ${{env.IMAGE_REGISTRY_URL}}/${{ toLower(github.repository)}}/${{toLower(env.DOCKER_IMAGE_NAME)}}
+          images: ${{ env.IMAGE_REGISTRY_URL }}/${{ env.REPO_LC }}/${{ env.IMAGE_NAME_LC }}
           tags: |
             type=sha,format=long,prefix=
 
